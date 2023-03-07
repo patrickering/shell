@@ -1,7 +1,16 @@
-#/bin/bash
-# author@patrick
-# Script source network and self-writing
+#!/bin/bash
+
+######################################################################
 #
+# author@patrick
+# 
+# 功能作用：
+# 初始化安装和配置服务器脚本在centos7.x系统上使用。如果不需要使用哪个功能直接在
+# 最后面注释掉即可。
+# 
+######################################################################
+
+
 function basesoft {
     yum install gcc make autoconf vim sysstat net-tools iostat git wget
 }
@@ -88,6 +97,12 @@ function sshport {
     echo "修改完毕......"   
 }
 
+function staticip {
+    # 自行修改网卡名字和ip地址
+    sed -i 's/^ONBOOT.*/ONBOOT=yes/g;s/^BOOTPROTO.*/BOOTPROTO=static/g' /etc/sysconfig/network-scripts/ifcfg-enp0s3
+    sed -i '/^BOOTPROTO.*/a\IPADDR=192.168.1.123\nPREFIX=19\nGATEWAY=192.168.1.1\nDNS1=8.8.8.8' /etc/sysconfig/network-scripts/ifcfg-enp0s3
+    systemctl restart network
+}
 
 
 
@@ -118,3 +133,5 @@ swap
 passwd
 # 修改ssh端口
 sshport
+# 修改静态ip地址
+staticip
